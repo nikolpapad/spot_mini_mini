@@ -103,9 +103,9 @@ namespace ros_srl
                 ja_sub_("spot/joints", &ROSSerial::JointCommandCallback, this),
                 jp_sub_("spot/pulse", &ROSSerial::JointPulseCallback, this),
                 imu_pub_("spot/imu", &imu_msg_),
-                contact_pub_("spot/contact", &contact_msg_)
+                contact_pub_("spot/contact", &contact_msg_) {}
 
-            {
+            void init() {
                 nh_.initNode();
                 nh_.getHardware()->setBaud(500000);
 

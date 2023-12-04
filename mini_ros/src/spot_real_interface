@@ -46,7 +46,7 @@ alpha = rospy.get_param("alpha")
 # -1 for all
 actions_to_filter = rospy.get_param("actions_to_filter")
 
-
+# main controller for the robot
 class SpotCommander():
     def __init__(self, Agent=True, contacts=False):
 

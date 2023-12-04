@@ -23,7 +23,7 @@ namespace mini_ros
     {
     }
 
-    virtual int serialize(unsigned char *outbuffer) const
+    virtual int serialize(unsigned char *outbuffer) const override
     {
       int offset = 0;
       union {
@@ -46,7 +46,7 @@ namespace mini_ros
       return offset;
     }
 
-    virtual int deserialize(unsigned char *inbuffer)
+    virtual int deserialize(unsigned char *inbuffer) override
     {
       int offset = 0;
       union {
@@ -71,8 +71,8 @@ namespace mini_ros
      return offset;
     }
 
-    const char * getType(){ return "mini_ros/JointPulse"; };
-    const char * getMD5(){ return "372c64510294fc8eec78b728b048d2c9"; };
+    virtual const char * getType() override { return "mini_ros/JointPulse"; };
+    virtual const char * getMD5() override { return "372c64510294fc8eec78b728b048d2c9"; };
 
   };
 

@@ -29,7 +29,7 @@ namespace mini_ros
     {
     }
 
-    virtual int serialize(unsigned char *outbuffer) const
+    virtual int serialize(unsigned char *outbuffer) const override
     {
       int offset = 0;
       union {
@@ -63,7 +63,7 @@ namespace mini_ros
       return offset;
     }
 
-    virtual int deserialize(unsigned char *inbuffer)
+    virtual int deserialize(unsigned char *inbuffer) override
     {
       int offset = 0;
       union {
@@ -101,8 +101,8 @@ namespace mini_ros
      return offset;
     }
 
-    const char * getType(){ return "mini_ros/ContactData"; };
-    const char * getMD5(){ return "e1e8fe4de4334f7698a7f305ee06dce8"; };
+    virtual const char * getType() override { return "mini_ros/ContactData"; };
+    virtual const char * getMD5() override { return "e1e8fe4de4334f7698a7f305ee06dce8"; };
 
   };
 

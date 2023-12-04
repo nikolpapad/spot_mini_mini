@@ -50,7 +50,7 @@ namespace mini_ros
     {
     }
 
-    virtual int serialize(unsigned char *outbuffer) const
+    virtual int serialize(unsigned char *outbuffer) const override
     {
       int offset = 0;
       uint32_t length_motion = strlen(this->motion);
@@ -156,7 +156,7 @@ namespace mini_ros
       return offset;
     }
 
-    virtual int deserialize(unsigned char *inbuffer)
+    virtual int deserialize(unsigned char *inbuffer) override
     {
       int offset = 0;
       uint32_t length_motion;
@@ -279,8 +279,8 @@ namespace mini_ros
      return offset;
     }
 
-    const char * getType(){ return "mini_ros/MiniCmd"; };
-    const char * getMD5(){ return "83510b9a5f454bd3ceb898b52e349406"; };
+    virtual const char * getType() override { return "mini_ros/MiniCmd"; };
+    virtual const char * getMD5() override { return "83510b9a5f454bd3ceb898b52e349406"; };
 
   };
 

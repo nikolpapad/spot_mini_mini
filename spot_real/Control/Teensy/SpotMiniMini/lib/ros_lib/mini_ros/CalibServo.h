@@ -24,7 +24,7 @@ static const char CALIBSERVO[] = "mini_ros/CalibServo";
     {
     }
 
-    virtual int serialize(unsigned char *outbuffer) const
+    virtual int serialize(unsigned char *outbuffer) const override
     {
       int offset = 0;
       union {
@@ -47,7 +47,7 @@ static const char CALIBSERVO[] = "mini_ros/CalibServo";
       return offset;
     }
 
-    virtual int deserialize(unsigned char *inbuffer)
+    virtual int deserialize(unsigned char *inbuffer) override
     {
       int offset = 0;
       union {
@@ -72,8 +72,8 @@ static const char CALIBSERVO[] = "mini_ros/CalibServo";
      return offset;
     }
 
-    const char * getType(){ return CALIBSERVO; };
-    const char * getMD5(){ return "372c64510294fc8eec78b728b048d2c9"; };
+    virtual const char * getType() override { return CALIBSERVO; };
+    virtual const char * getMD5() override { return "372c64510294fc8eec78b728b048d2c9"; };
 
   };
 
@@ -88,7 +88,7 @@ static const char CALIBSERVO[] = "mini_ros/CalibServo";
     {
     }
 
-    virtual int serialize(unsigned char *outbuffer) const
+    virtual int serialize(unsigned char *outbuffer) const override
     {
       int offset = 0;
       uint32_t length_Response = strlen(this->Response);
@@ -99,7 +99,7 @@ static const char CALIBSERVO[] = "mini_ros/CalibServo";
       return offset;
     }
 
-    virtual int deserialize(unsigned char *inbuffer)
+    virtual int deserialize(unsigned char *inbuffer) override
     {
       int offset = 0;
       uint32_t length_Response;
@@ -114,8 +114,8 @@ static const char CALIBSERVO[] = "mini_ros/CalibServo";
      return offset;
     }
 
-    const char * getType(){ return CALIBSERVO; };
-    const char * getMD5(){ return "e9ca8778f2b24ad03f8213b9fe82be44"; };
+    virtual const char * getType() override { return CALIBSERVO; };
+    virtual const char * getMD5() override { return "e9ca8778f2b24ad03f8213b9fe82be44"; };
 
   };
 

@@ -170,7 +170,7 @@ int main(int argc, char** argv)
 
         if (current_time.toSec() - last_time.toSec() > timeout)
         {
-          ROS_ERROR("TIMEOUT...ENGAGING E-STOP!");
+          ROS_ERROR_ONCE("TIMEOUT...ENGAGING E-STOP!");
         }
 
         // Now publish
