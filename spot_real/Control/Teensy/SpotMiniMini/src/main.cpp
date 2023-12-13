@@ -24,7 +24,7 @@
         - RUN is used when you are finished calibrating, and are ready to run normal operations.
 */
 enum MODE {NOMINAL_PWM, STRAIGHT_LEGS, LIEDOWN, PERPENDICULAR_LEGS, RUN};
-MODE spot_mode =NOMINAL_PWM;
+MODE spot_mode = NOMINAL_PWM;
 
 bool ESTOPPED = false;
 int viewing_speed = 400; // doesn't really mean anything, theoretically deg/sec
@@ -263,8 +263,7 @@ void perpendicular_calibration_sequence()
 // THIS ONLY RUNS ONCE
 void setup()
 {
-
-  Serial.begin(9600);
+  Serial.begin(500000);
 
   ros_serial.init();
 
@@ -333,12 +332,20 @@ void setup()
   last_estop = millis();
 
   prev_publish_time = micros();
-  pinMode(LED_BUILTIN, OUTPUT);
+  // pinMode(LED_BUILTIN, OUTPUT);
 }
 
 // THIS LOOPS FOREVER
 void loop()
 {
+  // if (ros_serial.isInit())
+  //   Serial.println("Connected");
+  // else
+  //   Serial.println("Disconnected");
+  // if (Serial.available()) {
+  //   Serial.print("Read ");
+  //   Serial.println((char)(Serial.read()));
+  // }
   // CHECK SENSORS AND SEND INFO
   // CONTACT
   // 1'000'000 / 20'000 = 50hz
@@ -393,5 +400,6 @@ void loop()
 
   // Update ROS Node (spinOnce etc...)
   ros_serial.run();
-  digitalWrite(LED_BUILTIN, HIGH);
+  // digitalWrite(LED_BUILTIN, HIGH);
+  // Serial.println("WHATEVER");
 }

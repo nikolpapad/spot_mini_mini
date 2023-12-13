@@ -1,7 +1,7 @@
 #ifndef ROSSERIAL_HPP
 #define ROSSERIAL_HPP
 
-#define USE_TEENSY_HW_SERIAL
+// #define USE_TEENSY_HW_SERIAL //Using Serial from USB port, not necessary
 
 #include <ros.h>
 #include <ros/time.h>
@@ -152,6 +152,11 @@ namespace ros_srl
                 joints_pulse_active_ = false;
                 pulse = 1250;
                 joint_num = -1;
+            }
+
+            bool isInit()
+            {
+                return nh_.connected();
             }
 
             void run()
