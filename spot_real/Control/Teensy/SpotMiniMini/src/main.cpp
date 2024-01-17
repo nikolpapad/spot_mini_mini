@@ -1,6 +1,8 @@
 /// \file
 /// \brief Teensy Main.
 
+// #define USE_USBCON
+
 #include <Arduino.h>
 #include <Adafruit_BNO055.h>
 #include <SpotServo.hpp>
@@ -17,14 +19,14 @@
 /* Instructions:
         - When assembling your servos, use NOMINAL_PWM mode, and be sure to enter the
           appropriate degree and pwm range too.
-        - Use servo_calibration.launch on your Ubuntu machine running ROS Melodic and
+        - Use servo_calibration.launch on your Ubuntu machine running ROS Noetic and
           hence the servo_calibrator service to send PWM values to each joint, and then
           enter the resultant values in the Initialize() method of the SpotServo class.
         - STRAIGHT_LEGS, LIEDOWN, and PERPENDICULAR_LEGS are used to validate your calibraton.
         - RUN is used when you are finished calibrating, and are ready to run normal operations.
 */
 enum MODE {NOMINAL_PWM, STRAIGHT_LEGS, LIEDOWN, PERPENDICULAR_LEGS, RUN};
-MODE spot_mode = NOMINAL_PWM;
+MODE spot_mode = RUN;
 
 bool ESTOPPED = false;
 int viewing_speed = 400; // doesn't really mean anything, theoretically deg/sec
@@ -144,8 +146,8 @@ void update_sensors()
     BR_sensor.update_clk();
 }
 
-void set_stance(const double & f_shoulder_stance = 0.0, const double & f_elbow_stance = 0.0, const double & f_wrist_stance = 0.0,
-                const double & r_shoulder_stance = 0.0, const double & r_elbow_stance = 0.0, const double & r_wrist_stance = 0.0)
+void set_stance(const double & f_shoulder_stance = 0.0, const double & f_elbow_stance = 90.0, const double & f_wrist_stance = 0.0,
+                const double & r_shoulder_stance = 0.0, const double & r_elbow_stance = 90.0, const double & r_wrist_stance = 0.0)
 {
   // Legs
   FL_.FillLegJoint(f_shoulder_stance, f_elbow_stance, f_wrist_stance);
@@ -167,7 +169,7 @@ void set_stance(const double & f_shoulder_stance = 0.0, const double & f_elbow_s
 
 
 // Set servo pwm values to nominal assuming 500~2500 range and 270 degree servos.
-void nominal_servo_pwm(const double & servo_range = 120, const int & min_pwm = 500, const int & max_pwm = 2500)
+void nominal_servo_pwm(const double & servo_range = 180, const int & min_pwm = 500, const int & max_pwm = 2500)
 {
   // Attach motors for assembly
   // Shoulders
@@ -194,7 +196,7 @@ void nominal_servo_pwm(const double & servo_range = 120, const int & min_pwm = 5
   int elbow_pulse = halfway_pulse; // 1500
 
   // wrists need roughly 180
-  int remaining_range = round(((180.0 - (servo_range / 2.0)) / double(servo_range)) * (max_pwm - min_pwm));
+  int remaining_range = round(((180.0 - (servo_range / 2.0)) / double(servo_range)) * (max_pwm - min_pwm));            
   int left_wrist_pulse = halfway_pulse - remaining_range; // 1167
   int right_wrist_pulse = halfway_pulse + remaining_range; // 1833
   //FL
@@ -209,7 +211,7 @@ void nominal_servo_pwm(const double & servo_range = 120, const int & min_pwm = 5
   AllServos[6]->writePulse(shoulder_pulse);
   AllServos[7]->writePulse(elbow_pulse);
   AllServos[8]->writePulse(left_wrist_pulse);
-  //BR
+  //BR  
   AllServos[9]->writePulse(shoulder_pulse);
   AllServos[10]->writePulse(elbow_pulse);
   AllServos[11]->writePulse(right_wrist_pulse);
@@ -230,7 +232,7 @@ void run_sequence()
 
 void straight_calibration_sequence()
 {
-  set_stance();
+    set_stance();
 }
 
 void lie_calibration_sequence()
@@ -239,8 +241,8 @@ void lie_calibration_sequence()
   // Move to Extended stance
   delay(2000);
   double shoulder_stance = 0.0;
-  double elbow_stance =  90.0;
-  double wrist_stance = -170.3;
+  double elbow_stance =  90.0; //
+  double wrist_stance = -170.3; //
   set_stance(shoulder_stance, elbow_stance, wrist_stance, shoulder_stance, elbow_stance, wrist_stance);
 
 }
@@ -254,8 +256,8 @@ void perpendicular_calibration_sequence()
   // Move to Extended stance
   delay(10000);
   double shoulder_stance = 0.0;
-  double elbow_stance =  90.0;
-  double wrist_stance = -90.0;
+  double elbow_stance =  0.0;
+  double wrist_stance = -90.0; //To allaska apo -90.0 se 0.0
   set_stance(shoulder_stance, elbow_stance, wrist_stance, shoulder_stance, elbow_stance, wrist_stance);
 
 }
@@ -282,27 +284,28 @@ void setup()
     ik.Initialize(0.04, 0.1, 0.1);
 
     // SERVOS: Pin, StandAngle, HomeAngle, Offset, LegType, JointType, min_pwm, max_pwm, min_pwm_angle, max_pwm_angle
+    //ROBOT POSE AT STARTUP
 
     // Shoulders
     double shoulder_liedown = 0.0;
-    FL_Shoulder.Initialize(2, 135 + shoulder_liedown, 135, -7.25, FL, Shoulder, 500, 2400); // 0 | 0: STRAIGHT | 90: OUT | -90 IN
-    FR_Shoulder.Initialize(5, 135 - shoulder_liedown, 135, -5.5, FR, Shoulder, 500, 2400);  // 1 | 0: STRAIGHT | 90: IN  | -90 OUT
-    BL_Shoulder.Initialize(8, 135 + shoulder_liedown, 135, 5.75, BL, Shoulder, 500, 2400);  // 2 | 0: STRAIGHT | 90: OUT | -90 IN
-    BR_Shoulder.Initialize(11, 135 - shoulder_liedown, 135, -4.0, BR, Shoulder, 500, 2400); // 3 | 0: STRAIGHT | 90: IN  | -90 OUT
+    FL_Shoulder.Initialize(2, 90 + shoulder_liedown, 90, -7.25, FL, Shoulder, 1185, 1860, 60, 120); // 0 | 90 mid - 0 out - 180 in   
+    FR_Shoulder.Initialize(5, 90 - shoulder_liedown, 90, -5.5, FR, Shoulder, 1220, 1945, 60, 120);  // 3 | 90 mid - 180 out - 90 in   
+    BL_Shoulder.Initialize(8, 90 + shoulder_liedown, 90, 5.75, BL, Shoulder, 1100, 1840, 60, 120);  // 6 | 90 mid - 0 out - 180 in 
+    BR_Shoulder.Initialize(11, 90 - shoulder_liedown, 90, -4.0, BR, Shoulder, 1080, 1840, 60, 120); // 9 | 90 mid - 180 out - 90 in 
 
     //Elbows
-    double elbow_liedown = 90.0;
-    FL_Elbow.Initialize(3, elbow_liedown, 0, 0.0, FL, Elbow, 1410, 2062, 0.0, 90.0);        // 4 | 0: STRAIGHT | 90: BACK
-    FR_Elbow.Initialize(6, elbow_liedown, 0, 0.0, FR, Elbow, 1408, 733, 0.0, 90.0);         // 5 | 0: STRAIGHT | 90: BACK
-    BL_Elbow.Initialize(9, elbow_liedown, 0, 0.0, BL, Elbow, 1460, 2095, 0.0, 90.0);        // 6 | 0: STRAIGHT | 90: BACK
-    BR_Elbow.Initialize(12, elbow_liedown, 0, 0.0, BR, Elbow, 1505, 850, 0.0, 90.0);        // 7 | 0: STRAIGHT | 90: BACK
+    double elbow_liedown = 25;
+    FL_Elbow.Initialize(3, elbow_liedown, 0, 0.0, FL, Elbow, 500, 2490, 180.0, 0.0);   // 1 | 0 in front & 180 in the back 
+    FR_Elbow.Initialize(6, elbow_liedown, 0, 0.0, FR, Elbow, 500, 2500, 0.0, 180.0);   // 4 | 180 in front & 0 in the back    
+    BL_Elbow.Initialize(9, elbow_liedown, 0, 0.0, BL, Elbow, 500, 2500, 180.0, 0.0);   // 7 | 0 in front & 180 in the back   
+    BR_Elbow.Initialize(12, elbow_liedown, 0, 0.0, BR, Elbow, 500, 2500, 0.0, 180.0);  // 10| 180 in front & 0 in the back    
 
     //Wrists
     double wrist_liedown = -160.0;
-    FL_Wrist.Initialize(4, wrist_liedown, 0, 0.0, FL, Wrist, 1755, 2320, -90.0, -165.0);    // 8 | 0: STRAIGHT | -90: FORWARD
-    FR_Wrist.Initialize(7, wrist_liedown, 0, 0.0, FR, Wrist, 1805, 1150, 0.0, -90.0);       // 9 | 0: STRAIGHT | -90: FORWARD
-    BL_Wrist.Initialize(10, wrist_liedown, 0, 0.0, BL, Wrist, 1100, 1733, 0.0, -90.0);     // 10 | 0: STRAIGHT | -90: FORWARD
-    BR_Wrist.Initialize(13, wrist_liedown, 0, 0.0, BR, Wrist, 1788, 1153, 0.0, -90.0);     // 11 | 0: STRAIGHT | -90: FORWARD
+    FL_Wrist.Initialize(4, wrist_liedown, 0, 0.0, FL, Wrist, 500, 1440, 0.0, -90.0);    // 2 | 0 straight - -90 forward  
+    FR_Wrist.Initialize(7, wrist_liedown, 0, 0.0, FR, Wrist, 2150, 1310, 0.0, -90.0);   // 5 | 0 straight - -90 forward   
+    BL_Wrist.Initialize(10, wrist_liedown, 0, 0.0, BL, Wrist, 500, 1480, 0.0, -90.0);   // 8 | 0 straight - -90 forward   
+    BR_Wrist.Initialize(13, wrist_liedown, 0, 0.0, BR, Wrist, 2500, 1570, 0.0, -90.0);  // 11 | 0 straight - -90 forward 
 
     // Contact Sensors
     FL_sensor.Initialize(A9, 17);
@@ -346,6 +349,7 @@ void loop()
   //   Serial.print("Read ");
   //   Serial.println((char)(Serial.read()));
   // }
+  
   // CHECK SENSORS AND SEND INFO
   // CONTACT
   // 1'000'000 / 20'000 = 50hz
@@ -401,5 +405,5 @@ void loop()
   // Update ROS Node (spinOnce etc...)
   ros_serial.run();
   // digitalWrite(LED_BUILTIN, HIGH);
-  // Serial.println("WHATEVER");
+  
 }
