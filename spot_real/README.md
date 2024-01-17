@@ -1,3 +1,9 @@
+Disclaimer: The Spot Mini Mini project was originally created back in 2020. 
+
+Since then, due to its author's NDA with their employer the development of the quadruped has stopped. 
+
+This forked repository serves as the renewal of the original one so that the project can develop further. For that reason the RPi's operating system has been moved to Ubuntu 20.04, ROS Noetic and the respective libraries have been changed.  
+
 # Spot Mini Mini - The Real Deal
 
 ## Software
