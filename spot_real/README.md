@@ -4,14 +4,14 @@
 
 ### Teensy Low Level Speed Controller: `Teensy`
 
-Custom Serialized ROS messages have been built using `ROSSerial` for ROS Melodic. These allow the Teensy to communicate with the Raspberry Pi safely and efficiently. The Teensy firmware is split into multiple header files for Servo Motor Operations, Inverse Kinematics, IMU and Contact Sensor readings, as well as the ROSSerial Interface. Becuase of this split, I have opted to use `PlatformIO` for compilation instead of the Arduino IDE.
+Custom Serialized ROS messages have been built using `ROSSerial` for ROS Noetic. These allow the Teensy to communicate with the Raspberry Pi safely and efficiently. The Teensy firmware is split into multiple header files for Servo Motor Operations, Inverse Kinematics, IMU and Contact Sensor readings, as well as the ROSSerial Interface. Becuase of this split, I have opted to use `PlatformIO` for compilation instead of the Arduino IDE.
 
 The `RPi` directory has some testing scripts which you will most likely not use.
 
 #### Installation Instructions:
 
 * Install `PlatformIO`.
-* Install `Ubuntu 18.04` and `ROS Melodic` on Raspberry Pi and well as `ROSSerial`.
+* Install `Ubuntu 20.04` and `ROS Noetic` on Raspberry Pi and well as `ROSSerial`. `omg`
 * Navigate to [firmware](https://github.com/moribots/spot_mini_mini/tree/spot/spot_real/Control/Teensy/SpotMiniMini) directory and run `platformio run -t upload` while connected to Teensy 4.0.
 
 #### Launch Instructions:
